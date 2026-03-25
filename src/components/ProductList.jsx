@@ -1,11 +1,14 @@
+import { Link } from "react-router-dom";
+
 function ProductList({ product }) {
   return (
+<Link to={`/product/${product.id}`} >
     <div className="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition">
       <img
         src={product.image}
         alt={product.title}
         className="h-40 mx-auto object-contain"
-      />
+        />
       <h2 className="mt-3 text-sm font-semibold line-clamp-2">
         {product.title}
       </h2>
@@ -19,6 +22,7 @@ function ProductList({ product }) {
         ${product.price}
       </p>
     </div>
+        </Link>
   );
 }
 
