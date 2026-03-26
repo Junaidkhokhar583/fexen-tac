@@ -7,7 +7,7 @@ export function useDeleteProduct(){
     return useMutation({
         mutationFn: deleteProduct,
         onSuccess:(data)=>{
-            console.log("deleted successfully,", data.title)
+            console.log("Deleted successfully, ", data)   
             queryClient.invalidateQueries(['products'])
         }
     })

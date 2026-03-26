@@ -7,7 +7,7 @@ export function useUpdateProduct(){
     return useMutation({
         mutationFn: updateProduct,
         onSuccess:(data)=>{
-            console.log("updated success," ,data.title)   
+            console.log("updated success," ,data)   
             queryClient.invalidateQueries(['products'])
         }
     })

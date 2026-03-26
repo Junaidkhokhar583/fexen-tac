@@ -49,7 +49,7 @@ export function Header() {
 
             <div className="w-full h-0.5 rounded-b-full z-20 bg-[#ffc41c]"></div>
 
-            <div className={`md:hidden w-1/2 h-dvh ml-auto bg-[#117e9f] fixed z-40 transform transition-transform duration-300 ease-in-out ${open ? "translate-y-0" : "translate-y-full"}`}>
+            <div className={`md:hidden w-1/2 h-dvh ml-auto bg-[#117e9f] fixed z-40 transform transition-transform duration-300 ease-in-out ${open ? "translate-y-0" : "translate-y-[5000%]"}`}>
                 
                 <ul className="grid gap-y-4 justify-items-start pl-2 pt-2">
                     
