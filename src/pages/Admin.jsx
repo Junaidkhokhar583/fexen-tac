@@ -174,7 +174,7 @@ function Admin() {
                       setShowDeleteModal(false);
                       setProductToDelete(null);
                       setIsDeleting(false);
-                      // setTimeout(() => setIsDeleting(false), 1000);
+
                     },
                     onError: () => setIsDeleting(false),
                   });
