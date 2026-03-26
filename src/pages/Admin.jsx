@@ -168,12 +168,13 @@ function Admin() {
                 className="bg-red-500 text-white px-4 py-2 rounded flex items-center justify-center min-w-27.5"
                 disabled={isDeleting}
                 onClick={() => {
+                  setIsDeleting(true);
                   deleteMutation.mutate(productToDelete, {
                     onSuccess: () => {
-                      setIsDeleting(true);
                       setShowDeleteModal(false);
                       setProductToDelete(null);
-                      setTimeout(() => setIsDeleting(false), 1000);
+                      setIsDeleting(false);
+                      // setTimeout(() => setIsDeleting(false), 1000);
                     },
                     onError: () => setIsDeleting(false),
                   });
