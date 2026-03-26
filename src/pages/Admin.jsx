@@ -8,118 +8,87 @@ function Admin() {
   const deleteMutation = useDeleteProduct();
   const updateMutation = useUpdateProduct();
 
-  const [editingId, setEditingId] = useState(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('');
-  const [image, setImage] = useState('');
+  const [editingProduct, setEditingProduct] = useState(null); 
+  const [editFields, setEditFields] = useState({
+    title: '',
+    description: '',
+    category: '',
+    price: '',
+    image: '',
+  });
+  const [isSaving, setIsSaving] = useState(false); 
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
-  const handleConfirm = () => {
-    if (!selectedProduct) return;
+  if (isLoading) return <p>Loading...</p>;
 
-    if (modalType === 'delete') {
-      deleteMutation.mutate(selectedProduct.id);
-    }
-
-    if (modalType === 'edit') {
-      setEditingId(selectedProduct.id);
-      setTitle(selectedProduct.title);
-      setDescription(selectedProduct.description);
-      setCategory(selectedProduct.category);
-      setPrice(selectedProduct.price);
-      setImage(selectedProduct.image);
-    }
-
-    if (modalType === 'save') {
-      updateMutation.mutate({
-        id: selectedProduct.id,
-        updatedData: {
-          ...selectedProduct,
-          title,
-          description,
-          category,
-          price,
-          image,
-        },
-      });
-      setEditingId(null);
-    }
-
-    setShowModal(false);
-    setSelectedProduct(null);
+  const openEditModal = (product) => {
+    setEditingProduct(product);
+    setEditFields({
+      title: product.title,
+      description: product.description,
+      category: product.category,
+      price: product.price,
+      image: product.image,
+    });
   };
 
-  if (isLoading) return <p className="p-6">Loading...</p>;
+  const handleEditChange = (field, value) => {
+    setEditFields((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const saveEdit = () => {
+    setIsSaving(true);
+    updateMutation.mutate(
+      { id: editingProduct.id, updatedData: { ...editingProduct, ...editFields } },
+      {
+        onSuccess: () => {
+          setEditingProduct(null);
+          setIsSaving(false);
+        },
+        onError: () => {
+          setIsSaving(false);
+        },
+      }
+    );
+  };
+
+  const openDeleteModal = (productId) => {
+    setProductToDelete(productId);
+    setShowDeleteModal(true);
+  };
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
-      <h1 className="text-xl sm:text-2xl font-bold mb-6">Admin Panel</h1>
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">Admin Panel</h1>
 
       <div className="space-y-4">
         {data.map((product) => (
           <div
             key={product.id}
-            className="bg-white p-4 rounded shadow flex flex-col md:flex-row md:justify-between gap-4"
+            className="bg-white p-4 rounded shadow flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-2 sm:gap-0"
           >
-        
-            {editingId === product.id ? (
-              <div className="w-full grid gap-2">
-                <input className="border p-2 w-full" value={title} onChange={(e) => setTitle(e.target.value)} />
-                <input className="border p-2 w-full" value={description} onChange={(e) => setDescription(e.target.value)} />
-                <input className="border p-2 w-full" value={category} onChange={(e) => setCategory(e.target.value)} />
-                <input className="border p-2 w-full" value={price} onChange={(e) => setPrice(e.target.value)} />
-                <input className="border p-2 w-full" value={image} onChange={(e) => setImage(e.target.value)} />
-              </div>
-            ) : (
-              <div className="grid gap-y-1 w-full md:w-10/12 wrap-break-words">
-                <span><strong>Title: </strong> {product.title}</span>
-                <span><strong>Description: </strong> {product.description}</span>
-                <span><strong>Category: </strong> {product.category}</span>
-                <span><strong>Price: </strong> {product.price}</span>
-                <span className="truncate md:whitespace-normal">
-                  <strong>Url: </strong> {product.image}
-                </span>
-              </div>
-            )}
+            <div className="grid gap-y-1 w-full sm:w-11/12">
+              <span><strong>Title: </strong>{product.title}</span>
+              <span><strong>Description: </strong>{product.description}</span>
+              <span><strong>Category: </strong>{product.category}</span>
+              <span><strong>Price: </strong>{product.price}</span>
+              <span><strong>Url: </strong>{product.image}</span>
+            </div>
 
-            
-            <div className="flex flex-col sm:flex-row md:flex-col gap-2 w-full md:w-auto md:items-end">
-              {editingId === product.id ? (
-                <button
-                  className="bg-green-500 text-white px-3 py-1 rounded w-full sm:w-auto"
-                  onClick={() => {
-                    setModalType('save');
-                    setSelectedProduct(product);
-                    setShowModal(true);
-                  }}
-                >
-                  Save
-                </button>
-              ) : (
-                <button
-                  className="bg-blue-500 text-white px-3 py-1 rounded w-full sm:w-auto"
-                  onClick={() => {
-                    setModalType('edit');
-                    setSelectedProduct(product);
-                    setShowModal(true);
-                  }}
-                >
-                  Edit
-                </button>
-              )}
+            <div className="flex sm:flex-col sm:space-y-2 space-x-2 sm:space-x-0 mt-2 sm:mt-0 w-full sm:w-auto">
+              <button
+                className="bg-blue-500 text-white px-3 py-1 rounded w-full sm:w-auto"
+                onClick={() => openEditModal(product)}
+              >
+                Edit
+              </button>
 
               <button
                 className="bg-red-500 text-white px-3 py-1 rounded w-full sm:w-auto"
-                onClick={() => {
-                  setModalType('delete');
-                  setSelectedProduct(product);
-                  setShowModal(true);
-                }}
+                onClick={() => openDeleteModal(product.id)}
               >
                 Delete
               </button>
@@ -128,29 +97,97 @@ function Admin() {
         ))}
       </div>
 
-      
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 px-4">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
-            <h2 className="text-base sm:text-lg font-bold mb-4">
-              {modalType === 'delete' && 'Are you sure you want to delete this product?'}
-              {modalType === 'edit' && 'Do you want to edit this product?'}
-              {modalType === 'save' && 'Save changes to this product?'}
+      {editingProduct && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50 p-4">
+          <div className="bg-white p-4 sm:p-6 rounded shadow-md w-full max-w-2xl">
+            <h2 className="text-lg font-semibold mb-4 text-center sm:text-left">Edit Product</h2>
+
+            <div className="grid gap-2">
+              {['title', 'description', 'category', 'price', 'image'].map((field) => (
+                <div key={field} className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="font-medium w-full sm:w-32 capitalize">{field}:</label>
+                  <input
+                    className="border p-2 w-full"
+                    value={editFields[field]}
+                    onChange={(e) => handleEditChange(field, e.target.value)}
+                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+              <button
+                className="bg-gray-300 px-4 py-2 rounded"
+                disabled={isSaving}
+                onClick={() => setEditingProduct(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded flex items-center justify-center min-w-27.5"
+                disabled={isSaving}
+                onClick={saveEdit}
+              >
+                {isSaving ? (
+                  <span className="flex items-center space-x-1">
+                    <span className="animate-bounce" style={{ animationDelay: "0s" }}>.</span>
+                    <span className="animate-bounce" style={{ animationDelay: "0.2s" }}>.</span>
+                    <span className="animate-bounce" style={{ animationDelay: "0.4s" }}>.</span>
+                  </span>
+                ) : (
+                  "Save"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50 p-4">
+          <div className="bg-white p-4 sm:p-6 rounded shadow-md w-full max-w-xs">
+            <h2 className="text-lg font-semibold mb-4 text-center sm:text-left">
+              Are you sure you want to delete?
             </h2>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-col sm:flex-row justify-end gap-2">
               <button
-                className="bg-gray-300 px-4 py-2 rounded w-full sm:w-auto"
-                onClick={() => setShowModal(false)}
+                className="bg-gray-300 px-4 py-2 rounded"
+                disabled={isDeleting}
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setProductToDelete(null);
+                }}
               >
                 No
               </button>
 
               <button
-                className="bg-green-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                onClick={handleConfirm}
+                className="bg-red-500 text-white px-4 py-2 rounded flex items-center justify-center min-w-27.5"
+                disabled={isDeleting}
+                onClick={() => {
+                  deleteMutation.mutate(productToDelete, {
+                    onSuccess: () => {
+                      setIsDeleting(true);
+                      setShowDeleteModal(false);
+                      setProductToDelete(null);
+                      setTimeout(() => setIsDeleting(false), 1000);
+                    },
+                    onError: () => setIsDeleting(false),
+                  });
+                }}
               >
-                Yes
+                {isDeleting ? (
+                  <span className="flex items-center space-x-1">
+                    <span className="animate-bounce" style={{ animationDelay: "0s" }}>.</span>
+                    <span className="animate-bounce" style={{ animationDelay: "0.2s" }}>.</span>
+                    <span className="animate-bounce" style={{ animationDelay: "0.4s" }}>.</span>
+                  </span>
+                ) : (
+                  "Yes, Delete"
+                )}
               </button>
             </div>
           </div>
