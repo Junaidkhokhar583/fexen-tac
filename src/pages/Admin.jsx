@@ -22,7 +22,15 @@ function Admin() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+
   if (isLoading) return <p>Loading...</p>;
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = data.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(data.length / productsPerPage);
 
   const openEditModal = (product) => {
     setEditingProduct(product);
@@ -65,7 +73,7 @@ function Admin() {
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">Admin Panel</h1>
 
       <div className="space-y-4">
-        {data.map((product) => (
+        {currentProducts.map((product) => (
           <div
             key={product.id}
             className="bg-white p-4 rounded shadow flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-2 sm:gap-0"
@@ -95,6 +103,36 @@ function Admin() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+        <button
+          className="px-3 py-1 bg-gray-300 rounded"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Prev
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            className={`px-3 py-1 rounded ${
+              currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
+            }`}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button
+          className="px-3 py-1 bg-gray-300 rounded"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </button>
       </div>
 
       {editingProduct && (
@@ -144,7 +182,6 @@ function Admin() {
         </div>
       )}
 
-    
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50 p-4">
           <div className="bg-white p-4 sm:p-6 rounded shadow-md w-full max-w-xs">
@@ -174,7 +211,7 @@ function Admin() {
                       setShowDeleteModal(false);
                       setProductToDelete(null);
                       setIsDeleting(false);
-
+                    
                     },
                     onError: () => setIsDeleting(false),
                   });
