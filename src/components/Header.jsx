@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { Button } from "./Button";
+import { Divider } from "./Divider";
 
 export function Header() {
     const [open, setOpen] = useState(false);
 
     return (
         <>
-            <nav className="bg-[#117e9f] flex items-center justify-around w-full z-50 py-2">
+            <nav className="bg-primary flex items-center justify-around w-full z-50 py-2">
                 <span><img src="/react.png" alt="vite-logo" /></span>
 
                 <ul className="hidden md:flex md:gap-x-4">
@@ -16,26 +18,36 @@ export function Header() {
                             className="group inline-block text-[#49c7ff]"
                         >
                             Home
-                            <span className="block h-0.5 bg-[#7e84ff] scale-x-0 rounded-lg group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                            <span className="block h-0.5 bg-tertiary scale-x-0 rounded-lg group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                         </NavLink>
                     </li>
 
                     <li className="font-medium font-sans">
                         <NavLink
-                            to="/admin"
-                            className="group text-[#49c7ff]"
+                           className="group text-[#49c7ff]"
+                             to="/admin"
                         >
                             Admin
-                            <span className="block group-hover:scale-x-100 scale-x-0 transition-transform duration-200 h-0.5 rounded-2xl bg-[#7e84ff] origin-left"></span>
+                            <span className="block group-hover:scale-x-100 scale-x-0 transition-transform duration-200 h-0.5 rounded-2xl bg-tertiary origin-left"></span>
+                        </NavLink>
+                    </li>
+                    <li className="font-medium font-sans">
+                        <NavLink
+                           className="group text-[#49c7ff]"
+                             to="/contact"
+                        >
+                            Contact
+                            <span className="block group-hover:scale-x-100 scale-x-0 transition-transform duration-200 h-0.5 rounded-2xl bg-tertiary origin-left"></span>
                         </NavLink>
                     </li>
 
                 
                 </ul>
 
-                <button className="md:block hidden bg-[#5fabff] text-yellow-300 rounded-2xl p-2 hover:text-black hover:bg-white transition duration-300 cursor-pointer">
+                <Button text="Learn More" />
+                {/* <button className="md:block hidden bg-[#5fabff] text-yellow-300 rounded-2xl p-2 hover:text-black hover:bg-white transition duration-300 cursor-pointer">
                     Learn More
-                </button>
+                </button> */}
 
                 <button
                     onClick={() => setOpen(prev => !prev)}
@@ -47,9 +59,9 @@ export function Header() {
                 </button>
             </nav>
 
-            <div className="w-full h-0.5 rounded-b-full z-20 bg-[#ffc41c]"></div>
+                        <Divider/>
 
-            <div className={`md:hidden w-1/2 h-dvh ml-auto bg-[#117e9f] fixed z-40 transform transition-transform duration-300 ease-in-out ${open ? "translate-y-0" : "translate-y-[5000%]"}`}>
+            <div className={`md:hidden w-1/2 h-dvh ml-auto bg-primary fixed z-40 transform transition-transform duration-300 ease-in-out ${open ? "translate-y-0" : "translate-y-[5000%]"}`}>
                 
                 <ul className="grid gap-y-4 justify-items-start pl-2 pt-2">
                     
@@ -60,7 +72,7 @@ export function Header() {
                             className="group inline-block text-[#49c7ff]"
                         >
                             Home
-                            <span className="block h-0.5 bg-[#7e84ff] scale-x-0 rounded-lg group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                            <span className="block h-0.5 bg-tertiary scale-x-0 rounded-lg group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                         </NavLink>
                         <img src="/react.png" alt="logo" />
                     </li>
@@ -72,7 +84,18 @@ export function Header() {
                             className="group text-[#49c7ff]"
                         >
                             Admin
-                            <span className="block group-hover:scale-x-100 scale-x-0 transition-transform duration-200 h-0.5 rounded-2xl bg-[#7e84ff] origin-left"></span>
+                            <span className="block group-hover:scale-x-100 scale-x-0 transition-transform duration-200 h-0.5 rounded-2xl bg-tertiary origin-left"></span>
+                        </NavLink>
+                        <img src="/react.png" alt="logo" />
+                    </li>
+                    <li className="font-medium font-sans flex flex-row-reverse gap-x-2 items-center">
+                        <NavLink
+                            to="/contact"
+                            onClick={() => setOpen(false)}
+                            className="group text-[#49c7ff]"
+                        >
+                           Contact
+                            <span className="block group-hover:scale-x-100 scale-x-0 transition-transform duration-200 h-0.5 rounded-2xl bg-tertiary origin-left"></span>
                         </NavLink>
                         <img src="/react.png" alt="logo" />
                     </li>
